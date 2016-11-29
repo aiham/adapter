@@ -12,11 +12,11 @@ var logging = require('../utils.js').log;
 var browserDetails = require('../utils.js').browserDetails;
 
 var chromeShim = {
-  shimMediaStream: function() {
+  shimMediaStream: function(window) {
     window.MediaStream = window.MediaStream || window.webkitMediaStream;
   },
 
-  shimOnTrack: function() {
+  shimOnTrack: function(window) {
     if (typeof window === 'object' && window.RTCPeerConnection && !('ontrack' in
         window.RTCPeerConnection.prototype)) {
       Object.defineProperty(window.RTCPeerConnection.prototype, 'ontrack', {
@@ -53,7 +53,7 @@ var chromeShim = {
     }
   },
 
-  shimSourceObject: function() {
+  shimSourceObject: function(window) {
     if (typeof window === 'object') {
       if (window.HTMLMediaElement &&
         !('srcObject' in window.HTMLMediaElement.prototype)) {
@@ -95,7 +95,11 @@ var chromeShim = {
     }
   },
 
-  shimPeerConnection: function() {
+  shimPeerConnection: function(window) {
+    var webkitRTCPeerConnection = window.webkitRTCPeerConnection;
+    var RTCIceCandidate = window.RTCIceCandidate;
+    var RTCSessionDescription = window.RTCSessionDescription;
+
     // The RTCPeerConnection object.
     window.RTCPeerConnection = function(pcConfig, pcConstraints) {
       // Translate iceTransportPolicy to iceTransports,
@@ -177,6 +181,8 @@ var chromeShim = {
       return pc;
     };
     window.RTCPeerConnection.prototype = webkitRTCPeerConnection.prototype;
+
+    var RTCPeerConnection = window.RTCPeerConnection;
 
     // wrap static methods. Currently just generateCertificate.
     if (webkitRTCPeerConnection.generateCertificate) {

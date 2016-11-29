@@ -11,7 +11,7 @@
 var browserDetails = require('../utils').browserDetails;
 
 var firefoxShim = {
-  shimOnTrack: function() {
+  shimOnTrack: function(window) {
     if (typeof window === 'object' && window.RTCPeerConnection && !('ontrack' in
         window.RTCPeerConnection.prototype)) {
       Object.defineProperty(window.RTCPeerConnection.prototype, 'ontrack', {
@@ -38,7 +38,7 @@ var firefoxShim = {
     }
   },
 
-  shimSourceObject: function() {
+  shimSourceObject: function(window) {
     // Firefox has supported mozSrcObject since FF22, unprefixed in 42.
     if (typeof window === 'object') {
       if (window.HTMLMediaElement &&
@@ -56,11 +56,16 @@ var firefoxShim = {
     }
   },
 
-  shimPeerConnection: function() {
+  shimPeerConnection: function(window) {
     if (typeof window !== 'object' || !(window.RTCPeerConnection ||
         window.mozRTCPeerConnection)) {
       return; // probably media.peerconnection.enabled=false in about:config
     }
+
+    var mozRTCPeerConnection = window.mozRTCPeerConnection;
+    var mozRTCSessionDescription = window.mozRTCSessionDescription;
+    var mozRTCIceCandidate = window.mozRTCIceCandidate;
+
     // The RTCPeerConnection object.
     if (!window.RTCPeerConnection) {
       window.RTCPeerConnection = function(pcConfig, pcConstraints) {
@@ -105,6 +110,10 @@ var firefoxShim = {
       window.RTCSessionDescription = mozRTCSessionDescription;
       window.RTCIceCandidate = mozRTCIceCandidate;
     }
+
+    var RTCPeerConnection = window.RTCPeerConnection;
+    var RTCIceCandidate = window.RTCIceCandidate;
+    var RTCSessionDescription = window.RTCSessionDescription;
 
     // shim away need for obsolete RTCIceCandidate/RTCSessionDescription.
     ['setLocalDescription', 'setRemoteDescription', 'addIceCandidate']

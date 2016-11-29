@@ -25,6 +25,8 @@
   // will not appear.
   // require('./utils').disableLog(false);
 
+  var globalObj = global;
+
   // Browser shims.
   var chromeShim = require('./chrome/chrome_shim') || null;
   var edgeShim = require('./edge/edge_shim') || null;
@@ -43,11 +45,11 @@
       // Export to the adapter global object visible in the browser.
       module.exports.browserShim = chromeShim;
 
-      chromeShim.shimGetUserMedia();
-      chromeShim.shimMediaStream();
-      chromeShim.shimSourceObject();
-      chromeShim.shimPeerConnection();
-      chromeShim.shimOnTrack();
+      chromeShim.shimGetUserMedia(globalObj);
+      chromeShim.shimMediaStream(globalObj);
+      chromeShim.shimSourceObject(globalObj);
+      chromeShim.shimPeerConnection(globalObj);
+      chromeShim.shimOnTrack(globalObj);
       break;
     case 'firefox':
       if (!firefoxShim || !firefoxShim.shimPeerConnection) {
@@ -58,10 +60,10 @@
       // Export to the adapter global object visible in the browser.
       module.exports.browserShim = firefoxShim;
 
-      firefoxShim.shimGetUserMedia();
-      firefoxShim.shimSourceObject();
-      firefoxShim.shimPeerConnection();
-      firefoxShim.shimOnTrack();
+      firefoxShim.shimGetUserMedia(globalObj);
+      firefoxShim.shimSourceObject(globalObj);
+      firefoxShim.shimPeerConnection(globalObj);
+      firefoxShim.shimOnTrack(globalObj);
       break;
     case 'edge':
       if (!edgeShim || !edgeShim.shimPeerConnection) {
@@ -72,8 +74,8 @@
       // Export to the adapter global object visible in the browser.
       module.exports.browserShim = edgeShim;
 
-      edgeShim.shimGetUserMedia();
-      edgeShim.shimPeerConnection();
+      edgeShim.shimGetUserMedia(globalObj);
+      edgeShim.shimPeerConnection(globalObj);
       break;
     case 'safari':
       if (!safariShim) {
@@ -84,7 +86,7 @@
       // Export to the adapter global object visible in the browser.
       module.exports.browserShim = safariShim;
 
-      safariShim.shimGetUserMedia();
+      safariShim.shimGetUserMedia(globalObj);
       break;
     default:
       logging('Unsupported browser!');

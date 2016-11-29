@@ -14,7 +14,9 @@ var safariShim = {
   // TODO: check for webkitGTK+
   // shimPeerConnection: function() { },
 
-  shimGetUserMedia: function() {
+  shimGetUserMedia: function(window) {
+    var navigator = window.navigator;
+
     navigator.getUserMedia = navigator.webkitGetUserMedia;
   }
 };

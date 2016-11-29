@@ -12,7 +12,9 @@ var SDPUtils = require('sdp');
 var browserDetails = require('../utils').browserDetails;
 
 var edgeShim = {
-  shimPeerConnection: function() {
+  shimPeerConnection: function(window) {
+    var MediaStreamTrack = window.MediaStreamTrack;
+
     if (window.RTCIceGatherer) {
       // ORTC defines an RTCIceCandidate object but no constructor.
       // Not implemented in Edge.
@@ -42,6 +44,15 @@ var edgeShim = {
         }
       });
     }
+
+    var document = window.document;
+    var RTCSessionDescription = window.RTCSessionDescription;
+    var RTCIceGatherer = window.RTCIceGatherer;
+    var RTCIceTransport = window.RTCIceTransport;
+    var RTCDtlsTransport = window.RTCDtlsTransport;
+    var MediaStream = window.MediaStream;
+    var RTCRtpReceiver = window.RTCRtpReceiver;
+    var RTCRtpSender = window.RTCRtpSender;
 
     window.RTCPeerConnection = function(config) {
       var self = this;
