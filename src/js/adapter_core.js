@@ -25,7 +25,8 @@
   // will not appear.
   // require('./utils').disableLog(false);
 
-  var globalObj = global;
+  var globalObj = require('./construct_global_mock')(global);
+  module.exports.window = globalObj;
 
   // Browser shims.
   var chromeShim = require('./chrome/chrome_shim') || null;
